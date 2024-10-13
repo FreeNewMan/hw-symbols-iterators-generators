@@ -1,22 +1,24 @@
 export default class Team {
   constructor() {
     this.chars = [];
-    this.nextIndex = 0;
+    this.current = 0;
   }
+
+  [Symbol.iterator] = function (cntx) {
+    return {
+      next() {
+        return cntx.current < cntx.chars.length
+          ? { value: cntx.chars[cntx.current++], done: false }
+          : { done: true };
+      },
+    };
+  };
 
   add(char) {
     this.chars.push(char);
   }
 
   showNextChar() {
-    let cntx = this;
-    return ({
-      next: function () {
-        return cntx.nextIndex < cntx.chars.length
-          ? { value: cntx.chars[cntx.nextIndex++], done: false }
-          : { done: true };
-      },
-    }).next().value;
+    return this[Symbol.iterator](this).next().value;
   }
 }
-
